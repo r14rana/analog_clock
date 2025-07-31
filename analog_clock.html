@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion Analog Clock</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            margin: 0;
+            background-color: #1a202c; /* Dark background for Notion embed */
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Prevent scrollbars */
+        }
+        .clock-container {
+            position: relative;
+            width: 200px; /* Base size for the clock */
+            height: 200px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.5); /* Slightly transparent dark */
+            backdrop-filter: blur(5px); /* Frosted glass effect */
+            border: 4px solid #4a5568; /* Medium gray border */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .clock-center {
+            width: 12px;
+            height: 12px;
+            background-color: #f7fafc; /* Light dot in the center */
+            border-radius: 50%;
+            position: absolute;
+            z-index: 10;
+        }
+
+        .hand {
+            position: absolute;
+            background-color: #f7fafc; /* Light color for hands */
+            border-radius: 2px;
+            transform-origin: bottom center; /* Pivot from the bottom */
+        }
+
+        .hour-hand {
+            width: 4px;
+            height: 60px;
+            top: calc(50% - 60px); /* Position from center */
+            left: calc(50% - 2px);
+            background-color: #63b3ed; /* Lighter blue for hour hand */
+        }
+
+        .minute-hand {
+            width: 3px;
+            height: 80px;
+            top: calc(50% - 80px); /* Position from center */
+            left: calc(50% - 1.5px);
+            background-color: #a0aec0; /* Lighter gray for minute hand */
+        }
+
+        .second-hand {
+            width: 2px;
+            height: 90px;
+            top: calc(50% - 90px); /* Position from center */
+            left: calc(50% - 1px);
+            background-color: #fc8181; /* Lighter red for second hand */
+            border-radius: 1px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .clock-container {
+                width: 150px;
+                height: 150px;
+            }
+            .hour-hand {
+                height: 45px;
+                top: calc(50% - 45px);
+            }
+            .minute-hand {
+                height: 60px;
+                top: calc(50% - 60px);
+            }
+            .second-hand {
+                height: 68px;
+                top: calc(50% - 68px);
+            }
+        }
+        @media (max-width: 400px) {
+            .clock-container {
+                width: 120px;
+                height: 120px;
+            }
+            .hour-hand {
+                height: 36px;
+                top: calc(50% - 36px);
+            }
+            .minute-hand {
+                height: 48px;
+                top: calc(50% - 48px);
+            }
+            .second-hand {
+                height: 54px;
+                top: calc(50% - 54px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <div class="hand hour-hand" id="hourHand"></div>
+        <div class="hand minute-hand" id="minuteHand"></div>
+        <div class="hand second-hand" id="secondHand"></div>
+        <div class="clock-center"></div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            // Calculate rotation for each hand
+            // Second hand moves 6 degrees per second (360 / 60)
+            const secondDegrees = seconds * 6;
+
+            // Minute hand moves 6 degrees per minute (360 / 60) + 0.1 degrees per second (6 / 60)
+            const minuteDegrees = (minutes * 6) + (seconds * 0.1);
+
+            // Hour hand moves 30 degrees per hour (360 / 12) + 0.5 degrees per minute (30 / 60)
+            const hourDegrees = (hours % 12 * 30) + (minutes * 0.5);
+
+            // Apply rotations
+            document.getElementById('secondHand').style.transform = `rotate(${secondDegrees}deg)`;
+            document.getElementById('minuteHand').style.transform = `rotate(${minuteDegrees}deg)`;
+            document.getElementById('hourHand').style.transform = `rotate(${hourDegrees}deg)`;
+        }
+
+        // Update the clock every second
+        setInterval(updateClock, 1000);
+
+        // Set the initial time immediately when the page loads
+        updateClock();
+    </script>
+</body>
+</html>
